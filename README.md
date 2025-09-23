@@ -40,8 +40,33 @@ Container platform administrators want a secure and performant way to deploy net
 ![Architecture Diagram](images/CNFS_ProposedArchitecture.jpg)
 
 #### Walkthrough Explanation of the above Architectural Structure:
+1. Kubernetes schedules a pod.
+2. The Kata runtime launches a lightweight VM for that pod. 
+3. Inside the VM, the kernel-level file system (e.g., NFS, CephFS)  runs with container-like semantics (namespaces, cgroups), and it can access kernel modules safely inside the VM kernel.
+4. For storage, the pod mounts a file system volume provided by Kubernetes.
 
-1. 
+#### In-depth explanation of each Components of the Architecture:
+
+1. Kubernetes
+    - Kubernetes orchestrates workloads, networking, and storage for each pod. 
+    - When a pod is scheduled to use Kata Containers as its runtime, Kubernetes asks the Kata runtime to launch it.
+
+2. Kata Containers (Lightweight VM-based Runtime)
+    - Unlike traditional containers (which share the host kernel),  Kata Containers launch each workload inside a lightweight virtual machine (VM).
+
+    - This VM provides:
+        - Its own kernel (isolated from the host).
+        - Stronger security boundaries (workload isolation).
+        - Compatibility with the [OCI](https://opencontainers.org/) container standard so Kubernetes and container tools treat it like a normal container.
+
+3. Kernel-level File System
+    - Within the Kata Container, the VM’s kernel runs filesystem clients such as NFS or CephFS.
+    - Kubernetes supplies storage (e.g., through Persistent Volumes), which is then mounted into the Kata container’s VM. As a result, the workload sees a fully functional filesystem interface, while the host remains isolated.
+
+4. Host
+    - The host machine runs Kubernetes and the Kata runtime.
+    - The Kata runtime manages the creation of lightweight VMs (one per pod).
+
 
 ## 5. Acceptance criteria
 ### Minimum Acceptance Criteria:
