@@ -17,7 +17,7 @@
 ## 4. Solution Concept
 
 ### Current Architecture
-![Architecture Diagram](images/ArchitectureDiagram.png)
+![Architecture Diagram](images/CNFS_ProposedArchitecture.jpg)
 
 #### Walkthrough Explanation of the above Architectural Structure:
 
