@@ -37,8 +37,10 @@ You will at least have to:
 ```
 $ sudo apt install virtiofsd 
 ```
-2. Start the Virtiofs daemon using virtiofs.sh before booting QEMU VM
-
+2. Start the Virtiofs daemon. virtiofs.sh includes a path to the directory on the host that you want to share in "source". Make sure this path exists.
+```
+$ ./virtiofs.sh
+```
 ### ssh into QEMU VM 
 ```
 $ ssh alexh@localhost -p 22222 -i root.id_rsa
