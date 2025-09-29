@@ -1,0 +1,29 @@
+#cloud-config
+# cloud config for QEMU image
+#
+# 1. Hostname
+hostname: noble
+fqdn: noble.local
+
+# 2. User Setup (replaces the default user with your custom user)
+users:
+  - name: alexh
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users, admin
+    shell: /bin/bash
+    # Set your public SSH key here (e.g., the content of ~/.ssh/id_rsa.pub)
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCpXOWlkmGbIzSKPjRgaZbsjrPMPhvo9feDL1//qYGhwn4YUJ3+cxLrbByC4+0re2beeFPTzsdyN8pSCe+XaB76O4BCzSbwEU+6yBE2iv4g0ZH5lcrtJ4nua06Lm0dfOs0W8c7USeAiVUMwd0aElIypaa0mRnRRzBiFCV79dVQ/ikik00iWDI3xLOJqsyOwpFiu1n9o3td5m2UJLICn6VuLlNEZ/wY/sl5jRGjdTLR5Ni/xctvETqItiKWIiysO3t/rok0xSLE+8+bpOBuyw7s80uKvmb/+P2ZQcLe3m2bkpWOA8+Bhf6o5lBRk5POypz84rAAlOQC/ilbLLPySolME2LHCgaGSQd/J2Bt1C4GWi7/urm9qisZOqnFU5fWPjlLmY2yYQge4wL7XU3Y/Vu931Qpqi8JgwhKQ3LZvaprnX6JhKUidHaA85dwgX7/dCveQdn0vkrmfmrc1kFR+KdZssgU8Jq8/RhFb1WPJx69gfBCGK+RmueYyCs7hKmHzHzc= alexh@noble
+
+# 3. Enable password login (Optional, but useful for console or initial setup)
+# Replace the hash with a generated SHA-512 hash of your desired password.
+# To generate the hash, see the section below.
+chpasswd:
+  list:
+    - alexh:$6$8Tb4faKFVbkfgGKK$FcNp9NwgIFcGjAFCVF.Lk7LLBFaOyxy8qRiD0hHnOgCEW6fnYBzi1hTqTpgnvCVYZCn9ju1QV90/utdW1k8IL.
+  expire: False
+ssh_pwauth: True
+
+# 4. Run an initial command (Optional: Install the QEMU guest agent)
+packages:
+  - qemu-guest-agent
