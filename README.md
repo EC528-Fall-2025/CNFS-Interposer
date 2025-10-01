@@ -101,13 +101,13 @@ User Value: Shows an end-to-end path where administrators get performance and de
 User Value: Kubernetes users can request and use networked file system volumes natively.
 - **Release 6 (Stretch Goal)**: implement a basic kernel file system that provides some functionality not included in the host file  system. For example, a file system that provides transparent encryption
 
-<!-- ## 7. Videos & Slides
+ ## 7. Videos & Slides
 ### [Sprint 1]()
 #### [Slides for sprint 1]()
 In the first sprint , .... 
 
 
-### [Sprint 2]()
+<!--### [Sprint 2]()
 #### [Slides for sprint 2]()
 In the second sprint are ...
 
