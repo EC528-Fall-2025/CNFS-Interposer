@@ -107,11 +107,11 @@ User Value: Kubernetes users can request and use networked file system volumes n
 #### [Sprint 1 Demo Video](https://www.youtube.com/watch?v=7Rx0rGAJwtA)
 In the first sprint , we did background research and completed the Minikube tutorial. Specifically, we installed Minikube on our local machine, used Docker as the driver, and successfully built a single-node Kubernetes cluster. In addition, we set up and tested virtiofs: we created and mounted a file system inside QEMU and successfully shared it with the host.
 
-<!--
 ### [Sprint 2]()
-#### [Slides for Sprint 2]()
+#### [Slides for Sprint 2](https://docs.google.com/presentation/d/1IypU_q9P1npXpS22hVqOgqhw_Zk31IIxe87dhJwtQs8/edit)
 In the second sprint are ...
 
+<!--
 ### [Sprint 3]()
 #### [Slides for Sprint 3]()
 #### [Sprint 3 Demo Video]()
