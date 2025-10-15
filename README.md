@@ -109,7 +109,8 @@ In the first sprint , we did background research and completed the Minikube tuto
 
 ### [Sprint 2]()
 #### [Slides for Sprint 2](https://docs.google.com/presentation/d/1IypU_q9P1npXpS22hVqOgqhw_Zk31IIxe87dhJwtQs8/edit)
-In the second sprint are ...
+#### [Sprint 2 Demo Video]()
+In the second sprint, ...
 
 <!--
 ### [Sprint 3]()
@@ -120,7 +121,7 @@ In the third sprint , ....
 
 ### [Sprint 4]()
 #### [Slides for Sprint 4]()
-#### [Sprint 3 Demo Video]()
+#### [Sprint 4 Demo Video]()
 In the fourth sprint , .... 
 
 
