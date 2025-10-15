@@ -110,7 +110,7 @@ In the first sprint , we did background research and completed the Minikube tuto
 ### [Sprint 2]()
 #### [Slides for Sprint 2](https://docs.google.com/presentation/d/1IypU_q9P1npXpS22hVqOgqhw_Zk31IIxe87dhJwtQs8/edit)
 #### [Sprint 2 Demo Video]()
-In the second sprint, ...
+In the second sprint, we explored the feasibility of using Kata Containers and studied its architecture. We successfully installed and configured Kata Containers using Docker as the runtime driver and shared files between the host and Kata through virtiofs. In addition, we integrated and set up Kata Containers within Minikube to support lightweight, VM-based container execution in a Kubernetes environment.
 
 <!--
 ### [Sprint 3]()
