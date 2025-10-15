@@ -30,7 +30,7 @@ Make sure `libvirt` and `virt-manager` are installed and properly configured.
 
 ### 1. Install Kata Containers Runtime
 
-Run **Alex’s guide** to install the Kata runtime.  
+Clone Run [`kata-manager.sh`](https://github.com/kata-containers/kata-containers/blob/main/utils/kata-manager.sh) from root directory to install the Kata runtime.  
 Ensure that the runtime binaries and configuration files are correctly set up.
 
 ---
