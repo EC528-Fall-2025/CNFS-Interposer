@@ -1,0 +1,18 @@
+# my-kata-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-kata-pod
+spec:
+  # Use the virtio-fs enabled RuntimeClass
+  runtimeClassName: kata-qemu
+  containers:
+  - name: my-kata-container
+    image: nginx:latest
+    volumeMounts:
+    - mountPath: "/mnt/shared-data"
+      name: kata-share-storage
+  volumes:
+  - name: kata-share-storage
+    persistentVolumeClaim:
+      claimName: kata-pvc
