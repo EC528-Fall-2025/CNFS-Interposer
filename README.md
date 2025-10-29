@@ -115,7 +115,7 @@ In the second sprint, we explored the feasibility of using Kata Containers and s
 ### [Sprint 3]()
 #### [Slides for Sprint 3](https://docs.google.com/presentation/d/1UswwTi3w2NvU6n1V2PoChBubajigZNIJNJj6g17H7ng/edit?slide=id.g38c4a3f15db_3_209#slide=id.g38c4a3f15db_3_209)
 #### [Sprint 3 Demo Video]()
-In the third sprint , .... 
+In the third sprint , we launch a Kata Pod in Kubernetes, mount a file system inside, and share it with the host via virtiofs. We also explored the components in Kubernetes storage to understand how to dynamically create persistent volumes through persistent volumes claim and storage class. And we also learned about CSI driver's background and how it integrate with K8s and our file system.
 
 <!--
 ### [Sprint 4]()
