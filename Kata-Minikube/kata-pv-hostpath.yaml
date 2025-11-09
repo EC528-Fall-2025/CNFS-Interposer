@@ -1,0 +1,18 @@
+# kata-pv-hostpath.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kata-pv-hostpath
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  # This is the path on the host node that virtio-fs will share with the VM
+  hostPath:
+    path: "/home/docker/hello-kata"
+    type: DirectoryOrCreate
+  storageClassName: kata-host-storage
+~                                      
