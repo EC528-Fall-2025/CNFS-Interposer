@@ -101,15 +101,35 @@ User Value: Shows an end-to-end path where administrators get performance and de
 User Value: Kubernetes users can request and use networked file system volumes natively.
 - **Release 6 (Stretch Goal)**: implement a basic kernel file system that provides some functionality not included in the host file  system. For example, a file system that provides transparent encryption
 
-<!-- ## 7. Videos & Slides
+ ## 7. Videos & Slides
 ### [Sprint 1]()
-#### [Slides for sprint 1]()
-In the first sprint , .... 
-
+#### [Slides for Sprint 1](https://docs.google.com/presentation/d/1PSJrjLQk-BImrp5sStBBPOSmxQEv6Oc5k1wZrpby_Pc/edit?slide=id.g384849e8eb9_0_100#slide=id.g384849e8eb9_0_100)
+#### [Sprint 1 Demo Video](https://www.youtube.com/watch?v=7Rx0rGAJwtA)
+In the first sprint , we did background research and completed the Minikube tutorial. Specifically, we installed Minikube on our local machine, used Docker as the driver, and successfully built a single-node Kubernetes cluster. In addition, we set up and tested virtiofs: we created and mounted a file system inside QEMU and successfully shared it with the host.
 
 ### [Sprint 2]()
-#### [Slides for sprint 2]()
-In the second sprint are ...
+#### [Slides for Sprint 2](https://docs.google.com/presentation/d/1IypU_q9P1npXpS22hVqOgqhw_Zk31IIxe87dhJwtQs8/edit)
+#### [Sprint 2 Demo Video](https://youtu.be/uTGK9bYGc0E?si=-kEkDVLAVXh38MgY)
+In the second sprint, we explored the feasibility of using Kata Containers and studied its architecture. We successfully installed and configured Kata Containers using Docker as the runtime driver and shared files between the host and Kata through virtiofs. In addition, we integrated and set up Kata Containers within Minikube to support lightweight, VM-based container execution in a Kubernetes environment.
+
+### [Sprint 3]()
+#### [Slides for Sprint 3](https://docs.google.com/presentation/d/1UswwTi3w2NvU6n1V2PoChBubajigZNIJNJj6g17H7ng/edit?slide=id.g38c4a3f15db_3_209#slide=id.g38c4a3f15db_3_209)
+#### [Sprint 3 Demo Video](https://youtu.be/1hEAjAVjYNM)
+In the third sprint , we launch a Kata Pod in Kubernetes, mount a file system inside, and share it with the host via virtiofs. We also explored the components in Kubernetes storage to understand how to dynamically create persistent volumes through persistent volumes claim and storage class. And we also learned about CSI driver's background and how it integrate with K8s and our file system.
+
+<!--
+### [Sprint 4]()
+#### [Slides for Sprint 4]()
+#### [Sprint 4 Demo Video]()
+In the fourth sprint , .... 
+
+
+
+### [Sprint 5]()
+#### [Slides for Sprint 5]()
+#### [Sprint 5 Demo Video]()
+In the fifth sprint , .... 
+
 
 
 ### [Final Presenation]()
