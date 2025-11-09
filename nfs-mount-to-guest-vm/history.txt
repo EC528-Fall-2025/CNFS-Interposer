@@ -1,0 +1,66 @@
+
+   10  sudo apt update
+   11  sudo apt install nfs-kernel-server
+   12  sudo mkdir -p /demo 
+
+   22  sudo chown $USER:fall-2025-bu-cc- /demo
+   25  echo "Hi" >> /demo/test.txt
+
+   29  sudo vi /etc/exports
+   30  sudo exportfs -ra 
+   31  sudo exportfs -v
+
+
+
+   38  sudo mkdir /media/nfs
+   42  sudo mount -t nfs -o vers=4 192.168.39.1:/demo /media/nfs
+   43  ll /media/nfs
+   44  cat /media/nfs/test.txt
+   45  echo "How are you?" >> /media/nfs/test.txt
+   46  cat /demo/test.txt
+
+
+
+
+   47  sudo apt install qemu-kvm qemu-utils libvirt-daemon-system virt-manager bridge-utils
+   48  lsmod | grep kvm
+  185  wget https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
+  186  qemu-img resize noble-server-cloudimg-amd64.img 10G
+
+
+  207  touch network-config
+  208  touch meta-data
+  209  cat > user-data <<EOF
+  210  #cloud-config
+  211  password: password
+  212  chpasswd: 
+  213       expire: false
+  214  ssh_pwauth: True
+  215  EOF
+
+
+  219  genisoimage     -output seed.img     -volid cidata -rational-rock -joliet     user-data meta-data network-config
+  220  vi qemu-boot-ubuntu.sh 
+  221  sudo ./qemu-boot-ubuntu.sh 
+
+
+
+
+  237  ip addr show type bridge
+  238  vi /etc/qemu/bridge.conf
+
+
+  243  cd /etc
+  245  sudo mkdir qemu
+  246  cd qemu
+  248  sudo vi bridge.conf
+
+  251  cd ~
+  255  chmod 777 /demo/test.txt 
+  256  cat /demo/test.txt
+  257  echo "I'm also great. Have you done the homework?" >> test.txt
+  258  echo "I'm also great. Have you done the homework?" >> /demo/test.txt
+  259  clear
+  260  ls
+  261  history
+  262  history >> history.txt 
