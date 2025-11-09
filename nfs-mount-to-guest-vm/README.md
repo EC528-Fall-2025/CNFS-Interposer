@@ -101,7 +101,8 @@ cat /demo/test.txt   # on the host: should show the appended line
 
 ## 6. Notes, troubleshooting and tips
 
-- If the VM cannot reach the host, verify the host IP and QEMU networking mode. Bridged networking or user-mode networking with port-forwarding may be necessary depending on how your VM is launched.
+- If the VM cannot reach the host, verify the host IP and QEMU networking mode. Bridged networking or user-mode networking with port-forwarding may be necessary depending on how your VM is launched. [This guide](http://spad.uk/posts/really-simple-network-bridging-with-qemu/) is a really good reference to set up bridged networking with QEMU.
+
 - Check exported file permissions. If the VM user can't access files, temporarily relax permissions (e.g., `chmod 777`) while debugging.
 - Use `sudo exportfs -v` on the host to see the list of exported paths and allowed clients.
 - If you change `/etc/exports`, always run `sudo exportfs -ra` to reload exports.
