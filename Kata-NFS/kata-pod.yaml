@@ -1,0 +1,24 @@
+# test-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kata-gateway
+spec:
+  runtimeClassName: kata-qemu
+  containers:
+  - name: kata-c
+    image: ubuntu:latest
+    volumeMounts:
+    - mountPath: "/mnt/import"
+      name: pvc-in
+    - mountPath: "/mnt/export"
+      name: pvc-out
+    securityContext:
+      privileged: true
+  volumes:
+  - name: pvc-in
+    persistentVolumeClaim:
+      claimName: pvc-nfs-static
+  - name: pvc-out
+    persistentVolumeClaim:
+      claimName: kata-pvc
