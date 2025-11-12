@@ -117,14 +117,13 @@ In the second sprint, we explored the feasibility of using Kata Containers and s
 #### [Sprint 3 Demo Video](https://youtu.be/1hEAjAVjYNM)
 In the third sprint , we launch a Kata Pod in Kubernetes, mount a file system inside, and share it with the host via virtiofs. We also explored the components in Kubernetes storage to understand how to dynamically create persistent volumes through persistent volumes claim and storage class. And we also learned about CSI driver's background and how it integrate with K8s and our file system.
 
-<!--
 ### [Sprint 4]()
-#### [Slides for Sprint 4]()
-#### [Sprint 4 Demo Video]()
-In the fourth sprint , .... 
+#### [Slides for Sprint 4](https://docs.google.com/presentation/d/1XuPpaLnj0Rd_WmBCG-cyeq_Ex9QiYK70NnLGY4AROC0/edit?usp=sharing)
+#### [Sprint 4 Demo Video](https://youtu.be/a_asPfQsCfU)
+In the fourth sprint, we explain NFS and the components of CSI drivers, we mount an NFS in a Kata container, and we present ways to egress the data from the Kata container. We discuss our challenges working with Kubernetes storage and Kata containers. 
 
 
-
+<!--
 ### [Sprint 5]()
 #### [Slides for Sprint 5]()
 #### [Sprint 5 Demo Video]()
