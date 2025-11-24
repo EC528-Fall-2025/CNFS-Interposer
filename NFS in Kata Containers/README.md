@@ -106,6 +106,64 @@ sudo ln -sf /opt/kata/share/kata-containers/vmlinux-6.1.38-114-nfs /opt/kata/sha
 sudo systemctl restart containerd
 ```
 
+# Setup NFS server in host node
+## Install the NFS server packages
+```bash
+sudo apt install -y nfs-kernel-server nfs-common
+```
+
+## Create the shared directory
+```bash
+sudo mkdir -p /nfs/share
+sudo chown nobody:nogroup /nfs/share
+sudo chmod 777 /nfs/share
+```
+
+## Add the export configuration
+```bash
+echo "/nfs/share *(rw,sync,no_subtree_check,no_root_squash)" | sudo tee -a /etc/exports
+```
+
+## Apply the export configuration
+```bash
+sudo exportfs -ra
+```
+
+## Restart the NFS service
+```bash
+sudo systemctl restart nfs-kernel-server
+```
+## View the exported shares
+```bash
+showmount -e localhost
+```
+
+## Get the host machine's IP address
+```bash
+hostname -I | awk '{print $1}'
+```
+
+After creating the Kata Pod, we can mount the NFS inside the Pod by running the following commands:
+
+## Enter the pod
+```bash
+kubectl exec -it kata-nfs -- bash
+```
+## Install NFS Client
+```bash
+apt-get update && apt-get install -y nfs-common
+```
+## Mount NFS
+```bash
+mkdir -p /mnt/nfs && mount -t nfs "your host node ip address":/nfs/share /mnt/nfs
+```
+
+
+
+
+
+
+
 
 
 
