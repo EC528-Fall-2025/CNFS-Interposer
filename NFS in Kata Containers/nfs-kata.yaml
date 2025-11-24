@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kata-nfs
+spec:
+  runtimeClassName: kata
+  containers:
+  - name: nfs-client
+    image: ubuntu:22.04
+    command: ["/bin/bash", "-c", "sleep infinity"]
+    securityContext:
+      privileged: true
+      capabilities:
+        add:
+        - SYS_ADMIN
+        - NET_ADMIN
