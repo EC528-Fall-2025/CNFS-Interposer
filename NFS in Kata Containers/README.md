@@ -1,3 +1,26 @@
+# Setup K8s cluster
+## Initialize the Kubernetes cluster
+```bash
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+```
+
+## Create the .kube directory, copy the admin configuration file and change the file owner
+```bash
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+## Allow scheduling Pods on the control-plane node (since we only have one node)
+```bash
+kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+```
+
+## Apply the Flannel configuration
+```bash
+kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+```
+
 # Recompile Kata Kernel to support NFS
 
 ## Install the necessary build tools and dependencies
