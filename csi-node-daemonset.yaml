@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: cnfs-csi-node
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      app: cnfs-csi-node
+  template:
+    metadata:
+      labels:
+        app: cnfs-csi-node
+    spec:
+      serviceAccountName: cnfs-csi-node-sa
+      hostNetwork: true
+      containers:
+        #Node plugin (talks to Kata, does NodePublishVolume)
+        - name: cnfs-csi-node
+          image: ghcr.io/your-org/cnfs-csi-driver:latest     # TODO: replace
+          args:
+            - "--endpoint=unix:///csi/csi.sock"
+            - "--mode=node"
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: plugin-dir
+              mountPath: /csi
+            - name: pods-mount-dir
+              mountPath: /var/lib/kubelet/pods
+              mountPropagation: Bidirectional
+
+        #Node driver registrar
+        - name: csi-node-driver-registrar
+          image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
+          args:
+            - "--csi-address=/csi/csi.sock"
+            - "--kubelet-registration-path=/var/lib/kubelet/plugins/csi.cnfs.interposer.io/csi.sock"
+          volumeMounts:
+            - name: plugin-dir
+              mountPath: /csi
+            - name: registration-dir
+              mountPath: /registration
+
+      volumes:
+        - name: plugin-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins/csi.cnfs.interposer.io
+            type: DirectoryOrCreate
+        - name: registration-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins_registry
+            type: Directory
+        - name: pods-mount-dir
+          hostPath:
+            path: /var/lib/kubelet/pods
+            type: Directory

@@ -1,0 +1,10 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: cnfs-kata-nfs
+provisioner: csi.cnfs.interposer.io
+parameters:
+  server: 10.0.0.123                # TODO: replace with NFS server IP / DNS
+  share: /export/kata               # TODO: replace with NFS export path
+reclaimPolicy: Retain
+volumeBindingMode: Immediate
