@@ -1,0 +1,4 @@
+[submodule "kernel-rebuild/kata-containers-nfs-support"]
+	path = kernel-rebuild/kata-containers-nfs-support
+	url = git@github.com:rakin000/kata-containers.git
+	branch = nfs-support
