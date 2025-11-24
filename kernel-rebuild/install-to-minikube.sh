@@ -75,5 +75,5 @@ minikube cp "$KATA_KERNEZ_NFS_PATH" "$MINIKUBE_INSTALL_PATH/$INSTALLED_KERNEZ_NA
 minikube cp "$KATA_IMAGE_NFS_PATH" "$MINIKUBE_INSTALL_PATH/$INSTALLED_IMAGE_NAME"
 
 
-minikube ssh -- sudo sed -i '/kernel = / s/vmlinux.container/${INSTALLED_KERNEL_NAME}/'  /opt/kata/share/defaults/kata-containers/configuration.toml
-minikube ssh -- sudo sed -i '/image = / s/kata-containers.img/${INSTALLED_IMAGE_NAME}/'  /opt/kata/share/defaults/kata-containers/configuration.toml
+minikube ssh -- sudo sed -i "/kernel = / s/vmlinux.container/${INSTALLED_KERNEL_NAME}/"  /opt/kata/share/defaults/kata-containers/configuration.toml
+# minikube ssh -- sudo sed -i '/image = / s/kata-containers.img/${INSTALLED_IMAGE_NAME}/'  /opt/kata/share/defaults/kata-containers/configuration.toml

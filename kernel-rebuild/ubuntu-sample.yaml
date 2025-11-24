@@ -19,6 +19,6 @@ spec:
     securityContext:
       privileged: true
       capabilities:
-        add: ["SYS_ADMIN"]
+        add: ["SYS_ADMIN", "NET_ADMIN"]
   restartPolicy: Always
 
