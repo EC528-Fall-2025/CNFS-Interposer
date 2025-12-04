@@ -1,0 +1,13 @@
+# test-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kata-nfs-client
+spec:
+  runtimeClassName: kata-qemu
+  containers:
+  - name: kata-c
+    image: nfs-client:latest
+    imagePullPolicy: IfNotPresent
+    securityContext:
+      privileged: true
