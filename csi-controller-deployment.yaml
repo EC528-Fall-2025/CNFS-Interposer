@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cnfs-csi-controller
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cnfs-csi-controller
+  template:
+    metadata:
+      labels:
+        app: cnfs-csi-controller
+    spec:
+      serviceAccountName: cnfs-csi-controller-sa
+      containers:
+        #CSI controller plugin
+        - name: cnfs-csi-controller
+          image: ghcr.io/your-org/cnfs-csi-driver:latest   # TODO: replace
+          args:
+            - "--endpoint=unix:///csi/csi.sock"
+            - "--mode=controller"
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /csi
+
+        #External provisioner sidecar
+        - name: csi-provisioner
+          image: registry.k8s.io/sig-storage/csi-provisioner:v5.0.1
+          args:
+            - "--csi-address=/csi/csi.sock"
+            - "--feature-gates=Topology=true"
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /csi
+      volumes:
+        - name: socket-dir
+          emptyDir: {}
