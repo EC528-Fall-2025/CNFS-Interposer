@@ -11,7 +11,7 @@ kubectl version --client --output=yaml
 
 minikube start --vm-driver kvm2 --memory 6144 --network-plugin=cni --enable-default-cni --container-runtime=containerd --bootstrapper=kubeadm
 
-git clone --branch 3.22.0 https://github.com/kata-containers/kata-containers.git
+git clone --branch 3.21.0 https://github.com/kata-containers/kata-containers.git
 pushd kata-containers/tools/packaging/kata-deploy
 kubectl apply -f kata-rbac/base/kata-rbac.yaml
 kubectl apply -f kata-deploy/base/kata-deploy.yaml
