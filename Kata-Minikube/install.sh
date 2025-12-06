@@ -3,6 +3,10 @@ sudo apt-get install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils
 sudo adduser `id -un` libvirt
 sudo adduser `id -un` kvm
 virsh list --all
+
+# logout and login again to refresh group membership 
+
+
 curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-linux-amd64
 sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -11,6 +15,10 @@ kubectl version --client --output=yaml
 
 minikube start --vm-driver kvm2 --memory 6144 --network-plugin=cni --enable-default-cni --container-runtime=containerd --bootstrapper=kubeadm
 
+TEMP_DIR=$(mktemp -d)
+trap "rm -rf $TEMP_DIR" EXIT
+echo "Using temp dir: $TEMP_DIR"
+cd $TEMP_DIR
 git clone --branch 3.21.0 https://github.com/kata-containers/kata-containers.git
 pushd kata-containers/tools/packaging/kata-deploy
 kubectl apply -f kata-rbac/base/kata-rbac.yaml

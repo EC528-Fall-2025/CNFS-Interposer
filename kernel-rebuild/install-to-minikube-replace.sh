@@ -7,9 +7,9 @@ KATA_IMAGE_NFS_PATH=""
 MINIKUBE_INSTALL_PATH="/opt/kata/share/kata-containers/"
 MINIKUBE_CONFIG_PATH="/etc/kata-containers/configuration.toml"
 MINIKUBE_CONFIG_PATH="/opt/kata/share/defaults/kata-containers/configuration.toml"
-INSTALLED_KERNEL_NAME="vmlinux-nfs.container"
-INSTALLED_KERNEZ_NAME="vmlinuz-nfs.contianer"
-INSTALLED_IMAGE_NAME="kata-image-nfs.image"
+INSTALLED_KERNEL_NAME="vmlinux.container"
+INSTALLED_KERNEZ_NAME="vmlinuz.container"
+INSTALLED_IMAGE_NAME="kata-ubuntu-noble.image"
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -69,13 +69,6 @@ fi
 command -v minikube >/dev/null 2>&1 || die "minikube not found !!"
 
 
-minikube rm "/opt/kata/share/kata-containers/kata-ubuntu-noble-confidential.image"
-minikube rm "/opt/kata/share/kata-containers/kata-ubuntu-noble.image"
-
 minikube cp "$KATA_KERNEL_NFS_PATH" "$MINIKUBE_INSTALL_PATH/$INSTALLED_KERNEL_NAME"
 minikube cp "$KATA_KERNEZ_NFS_PATH" "$MINIKUBE_INSTALL_PATH/$INSTALLED_KERNEZ_NAME"
 minikube cp "$KATA_IMAGE_NFS_PATH" "$MINIKUBE_INSTALL_PATH/$INSTALLED_IMAGE_NAME"
-
-
-minikube ssh -- sudo sed -i "/kernel = / s/vmlinux.container/${INSTALLED_KERNEL_NAME}/"  /opt/kata/share/defaults/kata-containers/configuration.toml
-# minikube ssh -- sudo sed -i '/image = / s/kata-containers.img/${INSTALLED_IMAGE_NAME}/'  /opt/kata/share/defaults/kata-containers/configuration.toml
