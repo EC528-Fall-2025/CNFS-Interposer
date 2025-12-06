@@ -6,8 +6,6 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source ~/.bashrc
 rustc --version 
    
-git clone https://github.com/kata-containers/kata-containers.git
-cd kata-containers
 
 sudo apt update
 sudo apt install libssl-dev
