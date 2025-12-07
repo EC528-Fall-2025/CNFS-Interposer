@@ -6,6 +6,41 @@
 
 
 ## 0. Install Instructions
+
+## Minikube with Kata Containers
+```bash
+pushd Kata-Minikube 
+./install.sh 
+popd
+```
+The above script will install minikube with kata containers as runtime. You need to relogin or restart your terminal session and run the above script again to make sure the user groups are properly set.
+
+## Compile and Install Custom Kernel with NFS Support to Minikube
+Make sure to have the git submodule updated:
+```bash 
+git submodule update --init --recursive
+```
+
+Then run:
+```bash 
+pushd kernel-rebuild
+./run.sh
+popd
+```
+THis step will take some time as it will build a custom kernel with NFS support and install it to minikube's kata containers installation. 
+
+To test this you can use the `ubuntu-sample.yaml`. 
+```bash
+kubectl apply -f ubuntu-sample.yaml
+kubectl exec -it ubuntu -- sh
+
+
+mkdir /mnt/nfs 
+mount -t nfs -o vers=4 <HOST_IP>:<HOST_DIR> /mnt/nfs
+```
+Detailed instructions to setup NFS server and mount it inside a QEMU VM is provided in the `nfs-mount-to-guest-vm/README.md` file. 
+
+
 ## CSI Driver Installation
 1. Clone Repo
 

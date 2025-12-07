@@ -2,23 +2,25 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: ubuntu
-  labels:
-    app: ubuntu
 spec:
   runtimeClassName: kata-qemu
   containers:
   - image: ubuntu
-    command:
-      - "sleep"
-      - "604800"
-    imagePullPolicy: IfNotPresent
     name: ubuntu
-    env:
-    - name: HOST
-      value: "192.168.39.1"
     securityContext:
       privileged: true
       capabilities:
         add: ["SYS_ADMIN", "NET_ADMIN"]
-  restartPolicy: Always
-
+    command: ["sleep", "604800"]
+    lifecycle:
+      postStart:
+        exec:
+          command:
+            - /bin/bash
+            - -c
+            - |
+              apt-get update &&
+              DEBIAN_FRONTEND=noninteractive apt-get install -y \
+                nfs-common \
+                iproute2 \
+                iputils-ping
