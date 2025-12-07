@@ -37,7 +37,7 @@ Container platform administrators want a secure and performant way to deploy net
 ## 4. Solution Concept
 
 ### Current Architecture
-![Architecture Diagram](images/CNFS_ProposedArchitecture.jpg)
+![Architecture Diagram](images/CNFS_ProposedArchitecture2.jpg)
 
 #### Walkthrough Explanation of the above Architectural Structure:
 1. Kubernetes schedules a pod.
@@ -127,11 +127,9 @@ In the fourth sprint, we explain NFS and the components of CSI drivers, we mount
 #### [Sprint 5 Demo Video](https://youtu.be/Ny-NJKrBF1w)
 In the fifth sprint, we build the Kata VM with NFS kernel modules and we show two ways to connect the NFS server to the NFS client running in a Kata container: With a virtual bridge, and with Flannel. 
 
-<!--
+### [Final Presenation](https://youtu.be/S1CztAF7X_s)
+#### [Final Presentation Slides](https://docs.google.com/presentation/d/1S3OWkKJU5qIycXjRG7WRKRsSyf6k5ROFih45V93vSzc/edit?usp=sharing)
 
-### [Final Presenation]()
-#### [Final Presentation Slides](h)
-In our last presentation, we .....
 
 ## 9. References
 [1] Stefanov, Emil & van Dijk, Marten & Shi, Elaine & Fletcher, Christopher & Ren, Ling & Yu, Xiangyao & Devadas, Sahana. (2012). Path ORAM: an extremely simple oblivious RAM protocol. Proceedings of the ACM Conference on Computer and Communications Security. 10.1145/2508859.2516660. [Orginal Paper](https://people.csail.mit.edu/devadas/pubs/PathORam.pdf) -->
