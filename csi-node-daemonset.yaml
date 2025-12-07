@@ -12,6 +12,7 @@ spec:
       labels:
         app: cnfs-csi-node
     spec:
+      runtimeClassName: kata-qemu
       serviceAccountName: cnfs-csi-node-sa
       hostNetwork: true
 
