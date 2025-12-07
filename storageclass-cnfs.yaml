@@ -4,7 +4,8 @@ metadata:
   name: cnfs-kata-nfs
 provisioner: csi.cnfs.interposer.io
 parameters:
-  server: 10.0.0.123                # TODO: replace with NFS server IP / DNS
-  share: /export/kata               # TODO: replace with NFS export path
+  server: 192.168.39.181   # <-- CHANGE if Minikube IP differs
+  share: /exports/cnfs     # path inside Minikube VM
 reclaimPolicy: Retain
 volumeBindingMode: Immediate
+allowVolumeExpansion: false

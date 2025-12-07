@@ -14,8 +14,9 @@ spec:
     spec:
       serviceAccountName: cnfs-csi-node-sa
       hostNetwork: true
+
       containers:
-        # CSI Node plugin
+        # CNFS CSI Node Plugin
         - name: cnfs-csi-node
           image: ghcr.io/your-org/cnfs-csi-driver:latest
           imagePullPolicy: IfNotPresent
@@ -38,7 +39,7 @@ spec:
               mountPath: /var/lib/kubelet/pods
               mountPropagation: Bidirectional
 
-        # Node driver registrar
+        # Node driver registrar (registers the plugin with kubelet)
         - name: csi-node-driver-registrar
           image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
           args:
@@ -50,20 +51,39 @@ spec:
             - name: registration-dir
               mountPath: /registration
 
+        # Kata-side NFS client sidecar (placeholder for NFS tools in the sandbox)
+        - name: kata-nfs-client
+          image: alpine:3.18
+          securityContext:
+            privileged: true
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "[CNFS] Installing NFS client..."
+              # In a real deployment, you’d install NFS client tools here.
+              # On CloudLab, package mirrors/DNS can be flaky, so we avoid failing the pod.
+              # apk update || true
+              # apk add nfs-utils || apk add nfs-utils-lite || true
+              echo "[CNFS] NFS client ready."
+              sleep infinity
+          volumeMounts:
+            - name: plugin-dir
+              mountPath: /csi
+
       volumes:
-        # Directory for the CSI socket
+        # Directory that kubelet uses for plugin sockets
         - name: plugin-dir
           hostPath:
             path: /var/lib/kubelet/plugins/csi.cnfs.interposer.io
             type: DirectoryOrCreate
 
-        # REQUIRED — directory where registrar puts the registration socket
+        # Where the registrar registers the driver with kubelet
         - name: registration-dir
           hostPath:
             path: /var/lib/kubelet/plugins_registry
             type: DirectoryOrCreate
 
-        # Required for Kata runtime / VM based mounts
+        # Required for Kata runtime / VM-based mounts
         - name: pods-mount-dir
           hostPath:
             path: /var/lib/kubelet/pods

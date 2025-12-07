@@ -104,27 +104,26 @@ func (d *driver) Probe(ctx context.Context, req *csi.ProbeRequest) (*csi.ProbeRe
 // ---------- ControllerServer ----------
 
 func (d *driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest) (*csi.CreateVolumeResponse, error) {
-    if req.GetName() == "" {
+    volName := req.GetName()
+    if volName == "" {
         return nil, status.Error(codes.InvalidArgument, "Volume name missing")
     }
 
-    volID := fmt.Sprintf("cnfs-%s", req.GetName())
+    volID := fmt.Sprintf("cnfs-%s", volName)
 
     return &csi.CreateVolumeResponse{
         Volume: &csi.Volume{
             VolumeId:      volID,
             CapacityBytes: req.GetCapacityRange().GetRequiredBytes(),
+            VolumeContext: req.GetParameters(),
         },
     }, nil
 }
 
-
 func (d *driver) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest) (*csi.DeleteVolumeResponse, error) {
-    if req.GetVolumeId() == "" {
-        return nil, status.Error(codes.InvalidArgument, "Volume ID missing")
-    }
     return &csi.DeleteVolumeResponse{}, nil
 }
+
 
 
 func (d *driver) ControllerGetCapabilities(ctx context.Context, req *csi.ControllerGetCapabilitiesRequest) (*csi.ControllerGetCapabilitiesResponse, error) {
@@ -138,8 +137,9 @@ func (d *driver) ControllerGetCapabilities(ctx context.Context, req *csi.Control
                 },
             },
         },
-    }, nil
+    }
 }
+
 
 
 
