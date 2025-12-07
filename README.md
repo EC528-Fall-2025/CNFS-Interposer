@@ -10,12 +10,15 @@
 1. Clone Repo
 
 git clone https://github.com/EC528-Fall-2025/CNFS-Interposer.git
+
 cd CNFS-Interposer
+
 git checkout cnfs-csi-driver
 
 2. Build locally
 
 cd cnfs-csi-driver
+
 docker build -t cnfs-csi-driver:latest .
 
 3. Load into minikube
@@ -25,10 +28,15 @@ minikube image load cnfs-csi-driver:latest
 4. Deploy driver
 
 kubectl apply -f csi-controller-rbac.yaml
+
 kubectl apply -f csi-controller-deployment.yaml
+
 kubectl apply -f csi-node-daemonset.yaml
+
 kubectl apply -f csi-driver.yaml
+
 kubectl apply -f storageclass-cnfs.yaml
+
 kubectl get pods -n kube-system | grep csi
 
 If both pods are running, that means you successfully loaded in the CSI driver.
