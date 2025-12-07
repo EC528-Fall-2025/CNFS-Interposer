@@ -6,22 +6,23 @@
 
 
 ## 0. Install Instructions
-Clone Repo
+## CSI Driver Installation
+1. Clone Repo
 
 git clone https://github.com/EC528-Fall-2025/CNFS-Interposer.git
 cd CNFS-Interposer
 git checkout cnfs-csi-driver
 
-Build locally
+2. Build locally
 
 cd cnfs-csi-driver
 docker build -t cnfs-csi-driver:latest .
 
-Load into minikube
+3. Load into minikube
 
 minikube image load cnfs-csi-driver:latest
 
-Deploy driver
+4. Deploy driver
 
 kubectl apply -f csi-controller-rbac.yaml
 kubectl apply -f csi-controller-deployment.yaml
