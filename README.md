@@ -6,6 +6,10 @@
 
 
 ## 0. Install Instructions
+Clone the repository:
+```bash
+git clone --recurse-submodules git@github.com:EC528-Fall-2025/CNFS-Interposer.git
+```
 
 ## Minikube with Kata Containers
 ```bash
