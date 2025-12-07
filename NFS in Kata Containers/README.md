@@ -1,3 +1,185 @@
+## Update the system and Install required tools
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+```bash
+sudo apt install -y apt-transport-https ca-certificates curl software-properties-common \
+    gnupg2 lsb-release wget git build-essential
+```
+# Install containerd
+## Download and add Docker’s GPG key
+```bash
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt update
+sudo apt install -y containerd.io
+```
+
+## Create the configuration directory and Generate the default configuration
+```bash
+sudo mkdir -p /etc/containerd
+
+containerd config default | sudo tee /etc/containerd/config.toml
+```
+
+## Modify the configuration using sed to set SystemdCgroup = true
+```bash
+sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+```
+
+## Restart the containerd service and Enable containerd to start on boot
+```bash
+sudo systemctl restart containerd
+
+sudo systemctl enable containerd
+```
+
+## Check containerd service status and Check containerd version
+```bash
+sudo systemctl status containerd
+
+containerd --version
+```
+
+# Install K8s
+## Permanently disable swap and Verify that swap is disabled (should show 0)
+```bash
+sudo swapoff -a
+sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+free -h
+```
+
+## Create a kernel module configuration file
+```bash
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+overlay
+br_netfilter
+EOF
+```
+## Load the modules immediately
+```bash
+sudo modprobe overlay
+sudo modprobe br_netfilter
+```
+## Create a sysctl configuration file
+```bash
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward                 = 1
+EOF
+```
+## Apply the sysctl configuration
+```bash
+sudo sysctl --system
+```
+## Install required dependencies (if not already installed)
+```bash
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+```
+## Download the Kubernetes GPG key
+```bash
+sudo mkdir -p /etc/apt/keyrings
+```
+```bash
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+```
+
+## Add the Kubernetes repository
+```bash
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+```
+
+## Update package index
+```bash
+sudo apt-get update
+```
+
+## Install kubelet, kubeadm, and kubectl
+```bash
+sudo apt-get install -y kubelet kubeadm kubectl
+```
+## Hold the versions to prevent automatic upgrades
+```bash
+sudo apt-mark hold kubelet kubeadm kubectl
+```
+## Verify installation
+```bash
+kubeadm version
+kubelet --version
+kubectl version --client
+```
+
+
+# Install Kata-runtime
+## Set the Kata version (using the latest stable release)
+```bash
+KATA_VERSION="3.2.0"
+```
+
+## Download the Kata Containers tarball, Extract it into the system directory, Clean up the downloaded file
+```bash
+cd /tmp
+wget https://github.com/kata-containers/kata-containers/releases/download/${KATA_VERSION}/kata-static-${KATA_VERSION}-amd64.tar.xz
+
+sudo tar -xvf kata-static-${KATA_VERSION}-amd64.tar.xz -C /
+
+rm kata-static-${KATA_VERSION}-amd64.tar.xz
+```
+
+## Add kata-runtime to your PATH
+```bash
+cd
+echo 'export PATH=$PATH:/opt/kata/bin' >> ~/.bashrc
+source ~/.bashrc
+```
+
+## Check the Kata version
+```bash
+kata-runtime --version
+```
+## Back up the current configuration
+```bash
+sudo cp /etc/containerd/config.toml /etc/containerd/config.toml.backup
+```
+
+## Open the configuration file
+```bash
+sudo nano /etc/containerd/config.toml
+```
+
+## Add the following configuration block:
+```bash
+[plugins."io.containerd.cri.v1.runtime".containerd.runtimes.kata]
+  runtime_type = "io.containerd.kata.v2"
+  privileged_without_host_devices = true
+  [plugins."io.containerd.cri.v1.runtime".containerd.runtimes.kata.options]
+    ConfigPath = "/opt/kata/share/defaults/kata-containers/configuration.toml"
+```
+
+## Locate the section:
+```bash
+[plugins."io.containerd.cri.v1.runtime".containerd.runtimes.runc]
+```
+## Add the above configuration block right below this section, preserving indentation.
+
+<img width="1063" height="607" alt="image" src="https://github.com/user-attachments/assets/de3a0e47-91a1-42d0-a5be-de96dc3f1432" />
+
+## Check whether the Kata configuration exists in the containerd config file
+```bash
+grep -A 5 "runtimes.kata" /etc/containerd/config.toml
+```
+
+## Restart the containerd service and Check the service status
+```bash
+sudo systemctl restart containerd
+sudo systemctl status containerd
+```
+
+
 # Setup K8s cluster
 ## Initialize the Kubernetes cluster
 ```bash
@@ -20,6 +202,32 @@ kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
 ```
+
+## View the status of Pods in all namespaces
+```bash
+kubectl get pods -A
+```
+## Check node status (it should become Ready)
+```bash
+kubectl get nodes
+```
+
+## Create the RuntimeClass resource
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: node.k8s.io/v1
+kind: RuntimeClass
+metadata:
+  name: kata
+handler: kata
+EOF
+```
+## View the RuntimeClass
+```bash
+kubectl get runtimeclass
+```
+
+
 
 # Recompile Kata Kernel to support NFS
 
