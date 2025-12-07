@@ -518,33 +518,42 @@ cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
 metadata:
-  name: client
+  name: kata-nfs-client
 spec:
   runtimeClassName: kata
   containers:
-  - name: app
+  - name: nfs-client
     image: ubuntu:22.04
     command: ["/bin/bash", "-c", "sleep infinity"]
-    volumeMounts:
-    - name: nfs-volume
-      mountPath: /data
-  volumes:
-  - name: nfs-volume
-    persistentVolumeClaim:
-      claimName: pvc
+    securityContext:
+      privileged: true
+      capabilities:
+        add:
+        - SYS_ADMIN
+        - NET_ADMIN
 EOF
 ```
 
 ## Enter the client Pod
 ```bash
-kubectl exec -it client -- /bin/bash
+kubectl exec -it kata-nfs-client -- /bin/bash
 ```
 
-## List the contents of the mounted directory, Check whether the client Pod can access the NFS share through the PVC.
+## Install NFS client tools
 ```bash
-ls /data
+apt-get update
+apt-get install -y nfs-common
 ```
 
+## Create a mount point
+```bash
+mkdir -p /mnt
+```
+
+## Mount the NFS share directly inside the Kata VM (using the NFS Server’s IP)
+```bash
+mount -t nfs 10.244.0.13:/ /mnt
+```
 
 
 
