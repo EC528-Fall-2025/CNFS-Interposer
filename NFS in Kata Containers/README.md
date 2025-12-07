@@ -520,6 +520,7 @@ kind: Pod
 metadata:
   name: client
 spec:
+  runtimeClassName: kata
   containers:
   - name: app
     image: ubuntu:22.04
