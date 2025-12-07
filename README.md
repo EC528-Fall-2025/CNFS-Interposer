@@ -46,37 +46,37 @@ Detailed instructions to setup NFS server and mount it inside a QEMU VM is provi
 
 
 ## CSI Driver Installation
-1. Clone Repo
+### 1. Clone Repo
 
+```bash
 git clone https://github.com/EC528-Fall-2025/CNFS-Interposer.git
-
 cd CNFS-Interposer
-
 git checkout cnfs-csi-driver
+``` 
 
-2. Build locally
+### 2. Build locally
 
+```bash 
 cd cnfs-csi-driver
-
 docker build -t cnfs-csi-driver:latest .
+docker image save cnfs-csi-driver:latest -o cnfs-csi-driver.tar
+``` 
+### 3. Load into minikube
 
-3. Load into minikube
+```bash 
+minikube image load cnfs-csi-driver.tar
+```
 
-minikube image load cnfs-csi-driver:latest
+### 4. Deploy driver
 
-4. Deploy driver
-
+```bash 
 kubectl apply -f csi-controller-rbac.yaml
-
 kubectl apply -f csi-controller-deployment.yaml
-
 kubectl apply -f csi-node-daemonset.yaml
-
 kubectl apply -f csi-driver.yaml
-
 kubectl apply -f storageclass-cnfs.yaml
-
 kubectl get pods -n kube-system | grep csi
+``` 
 
 If both pods are running, that means you successfully loaded in the CSI driver.
 
