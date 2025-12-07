@@ -44,42 +44,6 @@ mount -t nfs -o vers=4 <HOST_IP>:<HOST_DIR> /mnt/nfs
 ```
 Detailed instructions to setup NFS server and mount it inside a QEMU VM is provided in the `nfs-mount-to-guest-vm/README.md` file. 
 
-
-## CSI Driver Installation
-### 1. Clone Repo
-
-```bash
-git clone https://github.com/EC528-Fall-2025/CNFS-Interposer.git
-cd CNFS-Interposer
-git checkout cnfs-csi-driver
-``` 
-
-### 2. Build locally
-
-```bash 
-cd cnfs-csi-driver
-docker build -t cnfs-csi-driver:latest .
-docker image save cnfs-csi-driver:latest -o cnfs-csi-driver.tar
-``` 
-### 3. Load into minikube
-
-```bash 
-minikube image load cnfs-csi-driver.tar
-```
-
-### 4. Deploy driver
-
-```bash 
-kubectl apply -f csi-controller-rbac.yaml
-kubectl apply -f csi-controller-deployment.yaml
-kubectl apply -f csi-node-daemonset.yaml
-kubectl apply -f csi-driver.yaml
-kubectl apply -f storageclass-cnfs.yaml
-kubectl get pods -n kube-system | grep csi
-``` 
-
-If both pods are running, that means you successfully loaded in the CSI driver.
-
 ## 1. Vision and Goals Of The Project
 The vision of our project is to enable containerized environments, such as Kubernetes, to run kernel-dependent file system clients natively and securely, without requiring access to the host or dependence on the host kernel. By using virtual machines (Kata Containers) and standardized Kubernetes storage interfaces (CSI), the solution will allow file systems like NFS or CephFS to be mounted and consumed inside container workloads in a transparent, secure, and portable way. \
 Goals:
