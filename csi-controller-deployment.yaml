@@ -17,7 +17,7 @@ spec:
       containers:
         #CSI controller plugin
         - name: cnfs-csi-controller
-          image: ghcr.io/your-org/cnfs-csi-driver:latest
+          image: cnfs-csi-driver:latest
           imagePullPolicy: IfNotPresent
           args:
             - "--endpoint=$(CSI_ENDPOINT)"

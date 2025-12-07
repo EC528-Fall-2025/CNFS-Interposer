@@ -5,4 +5,8 @@ metadata:
 spec:
   attachRequired: false
   podInfoOnMount: false
+  requiresRepublish: false
+  storageCapacity: false
   fsGroupPolicy: File
+  volumeLifecycleModes:
+    - Persistent

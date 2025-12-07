@@ -19,7 +19,7 @@ spec:
       containers:
         # CNFS CSI Node Plugin
         - name: cnfs-csi-node
-          image: ghcr.io/your-org/cnfs-csi-driver:latest
+          image: cnfs-csi-driver:latest
           imagePullPolicy: IfNotPresent
           args:
             - "--endpoint=$(CSI_ENDPOINT)"
@@ -61,10 +61,6 @@ spec:
           args:
             - |
               echo "[CNFS] Installing NFS client..."
-              # In a real deployment, you’d install NFS client tools here.
-              # On CloudLab, package mirrors/DNS can be flaky, so we avoid failing the pod.
-              # apk update || true
-              # apk add nfs-utils || apk add nfs-utils-lite || true
               echo "[CNFS] NFS client ready."
               sleep infinity
           volumeMounts:
