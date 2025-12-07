@@ -6,7 +6,27 @@
 
 
 ## 0. Install Instructions
+Clone Repo
+git clone https://github.com/EC528-Fall-2025/CNFS-Interposer.git
+cd CNFS-Interposer
+git checkout cnfs-csi-driver
 
+Build locally
+cd cnfs-csi-driver
+docker build -t cnfs-csi-driver:latest .
+
+Load into minikube
+minikube image load cnfs-csi-driver:latest
+
+Deploy driver
+kubectl apply -f csi-controller-rbac.yaml
+kubectl apply -f csi-controller-deployment.yaml
+kubectl apply -f csi-node-daemonset.yaml
+kubectl apply -f csi-driver.yaml
+kubectl apply -f storageclass-cnfs.yaml
+kubectl get pods -n kube-system | grep csi
+
+If both pods are running, that means you successfully loaded in the CSI driver.
 
 ## 1. Vision and Goals Of The Project
 The vision of our project is to enable containerized environments, such as Kubernetes, to run kernel-dependent file system clients natively and securely, without requiring access to the host or dependence on the host kernel. By using virtual machines (Kata Containers) and standardized Kubernetes storage interfaces (CSI), the solution will allow file systems like NFS or CephFS to be mounted and consumed inside container workloads in a transparent, secure, and portable way. \
