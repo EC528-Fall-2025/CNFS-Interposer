@@ -31,7 +31,7 @@ pushd kernel-rebuild
 ./run.sh
 popd
 ```
-THis step will take some time as it will build a custom kernel with NFS support and install it to minikube's kata containers installation. 
+This step will take some time as it will build a custom kernel with NFS support and install it to minikube's kata containers installation. 
 
 To test this you can use the `ubuntu-sample.yaml`. 
 ```bash
