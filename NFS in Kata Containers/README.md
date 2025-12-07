@@ -270,6 +270,10 @@ scripts/config --enable CONFIG_NFS_V4_2
 scripts/config --enable CONFIG_ROOT_NFS
 scripts/config --enable CONFIG_NFS_USE_KERNEL_DNS
 scripts/config --enable CONFIG_NFS_FSCACHE
+scripts/config --enable CONFIG_NFSD
+scripts/config --enable CONFIG_NFSD_V3
+scripts/config --enable CONFIG_NFSD_V4
+scripts/config --enable CONFIG_NFSD_V4_2_INTER_SSC
 ```
 
 
@@ -314,61 +318,98 @@ sudo ln -sf /opt/kata/share/kata-containers/vmlinux-6.1.38-114-nfs /opt/kata/sha
 sudo systemctl restart containerd
 ```
 
-# Setup NFS server in host node
-## Install the NFS server packages
+# Create a Pod running an NFS server with Kata Containers
+
+## Create a symbolic link to containerd’s default binary path
 ```bash
-sudo apt install -y nfs-kernel-server nfs-common
+sudo ln -s /opt/kata/bin/containerd-shim-kata-v2 /usr/local/bin/containerd-shim-kata-v2
+```
+## Restart containerd and Restart kubelet
+```bash
+sudo systemctl restart containerd
+sudo systemctl restart kubelet
+```
+
+## Check status
+```bash
+sudo systemctl status containerd
+sudo systemctl status kubelet
+```
+
+
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kata-nfs-server
+  labels:
+    app: kata-nfs-server
+spec:
+  runtimeClassName: kata
+  containers:
+  - name: nfs-server
+    image: ubuntu:22.04
+    command: ["/bin/bash", "-c", "sleep infinity"]
+    securityContext:
+      privileged: true
+      capabilities:
+        add:
+        - SYS_ADMIN
+        - NET_ADMIN
+    volumeMounts:
+    - name: nfs-storage
+      mountPath: /exports
+  volumes:
+  - name: nfs-storage
+    emptyDir: {}
+EOF
+```
+
+## Check pod's status
+```bash
+kubectl get pods
+```
+## Enter the Kata NFS server Pod
+```bash
+kubectl exec -it kata-nfs-server -- /bin/bash
+```
+## Install NFS
+```bash
+apt-get update && apt-get install -y nfs-kernel-server nfs-common
 ```
 
 ## Create the shared directory
 ```bash
-sudo mkdir -p /nfs/share
-sudo chown nobody:nogroup /nfs/share
-sudo chmod 777 /nfs/share
+mkdir -p /exports/data
+chmod 777 /exports/data
 ```
 
-## Add the export configuration
+## Configure the export rules
 ```bash
-echo "/nfs/share *(rw,sync,no_subtree_check,no_root_squash)" | sudo tee -a /etc/exports
+echo "/exports/data *(rw,sync,no_subtree_check,no_root_squash,insecure,fsid=0)" > /etc/exports
 ```
-
+## Start all NFS services
+```bash
+rpcbind
+mount -t nfsd nfsd /proc/fs/nfsd
+rpc.nfsd
+rpc.mountd
+```
 ## Apply the export configuration
 ```bash
-sudo exportfs -ra
+exportfs -ra
 ```
 
-## Restart the NFS service
-```bash
-sudo systemctl restart nfs-kernel-server
-```
-## View the exported shares
+## Verify
 ```bash
 showmount -e localhost
 ```
 
-## Get the host machine's IP address
+## Exit the pod
 ```bash
-hostname -I | awk '{print $1}'
+exit
 ```
-
-After creating the Kata Pod, we can mount the NFS inside the Pod by running the following commands:
-
-## Enter the pod
-```bash
-kubectl exec -it kata-nfs -- bash
-```
-## Install NFS Client
-```bash
-apt-get update && apt-get install -y nfs-common
-```
-## Mount NFS
-```bash
-mkdir -p /mnt/nfs && mount -t nfs "your host node ip address":/nfs/share /mnt/nfs
-```
-
-
-
-
 
 
 
