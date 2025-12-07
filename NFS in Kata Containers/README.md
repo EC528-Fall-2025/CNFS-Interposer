@@ -506,9 +506,9 @@ kubectl get pv
 kubectl exec -it kata-nfs-server -- /bin/bash
 ```
 
-## Create the subdirectory required by the CSI driver， Make sure to replace this subdirectory name with the actual PV volume name you obtained earlier, and then exit the pod
+## Enter the exported dir
 ```bash
-mkdir -p /exports/data/pvc-49819ae4-1cde-408f-a861-4b4e904c91f1
+cd /exports/data
 ```
 
 
