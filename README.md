@@ -163,10 +163,8 @@ In the fourth sprint, we explain NFS and the components of CSI drivers, we mount
 #### [Sprint 5 Demo Video](https://youtu.be/Ny-NJKrBF1w)
 In the fifth sprint, we build the Kata VM with NFS kernel modules and we show two ways to connect the NFS server to the NFS client running in a Kata container: With a virtual bridge, and with Flannel. 
 
-<!--
-
 ### [Final Presenation]()
-#### [Final Presentation Slides](h)
+#### [Final Presentation Slides]()
 In our last presentation, we .....
 
 ## 9. References
