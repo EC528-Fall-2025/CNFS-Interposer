@@ -411,6 +411,138 @@ showmount -e localhost
 exit
 ```
 
+## Create the Service
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Service
+metadata:
+  name: kata-nfs-service
+spec:
+  selector:
+    app: kata-nfs-server
+  ports:
+  - name: nfs
+    port: 2049
+    protocol: TCP
+  - name: mountd
+    port: 20048
+    protocol: TCP
+  - name: rpcbind
+    port: 111
+    protocol: TCP
+  clusterIP: None
+EOF
+```
+
+## Get the IP address of the NFS Server Pod, Make sure to record this IP address
+```bash
+kubectl get pod kata-nfs-server -o wide
+```
+## Install the official NFS CSI Driver
+```bash
+curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/install-driver.sh | bash -s master --
+```
+
+## Check the CSI driver Pods， You need to wait until all Pods are in the Running state.
+```bash
+kubectl get pods -n kube-system | grep csi-nfs
+```
+
+## Check the CSIDriver resources
+```bash
+kubectl get csidrivers
+```
+## Create the StorageClass, Replace 10.244.0.30 with the IP address of your Kata NFS Server Pod.
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sc
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: 10.244.0.30
+  share: /
+reclaimPolicy: Retain
+volumeBindingMode: Immediate
+mountOptions:
+  - nfsvers=4.1
+EOF
+```
+
+## Check the StorageClass
+```bash
+kubectl get storageclass
+```
+
+## Create the PersistentVolumeClaim
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: sc
+EOF
+```
+## Check the PVC status， When the PVC status is Bound, everything is working correctly, You also need to record the PV name shown under the VOLUME column, as it will be used later.
+```bash
+kubectl get pvc
+```
+## Check the PV (it should be created automatically)
+```bash
+kubectl get pv
+```
+
+## Enter the NFS Server Pod again
+```bash
+kubectl exec -it kata-nfs-server -- /bin/bash
+```
+
+## Create the subdirectory required by the CSI driver， Make sure to replace this subdirectory name with the actual PV volume name you obtained earlier, and then exit the pod
+```bash
+mkdir -p /exports/data/pvc-49819ae4-1cde-408f-a861-4b4e904c91f1
+```
+
+
+## Create a test client Pod
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client
+spec:
+  containers:
+  - name: app
+    image: ubuntu:22.04
+    command: ["/bin/bash", "-c", "sleep infinity"]
+    volumeMounts:
+    - name: nfs-volume
+      mountPath: /data
+  volumes:
+  - name: nfs-volume
+    persistentVolumeClaim:
+      claimName: pvc
+EOF
+```
+
+## Enter the client Pod
+```bash
+kubectl exec -it client -- /bin/bash
+```
+
+## List the contents of the mounted directory, Check whether the client Pod can access the NFS share through the PVC.
+```bash
+ls /data
+```
 
 
 
