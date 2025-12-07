@@ -15,12 +15,20 @@ spec:
       serviceAccountName: cnfs-csi-node-sa
       hostNetwork: true
       containers:
-        #Node plugin (talks to Kata, does NodePublishVolume)
+        # CSI Node plugin
         - name: cnfs-csi-node
-          image: ghcr.io/your-org/cnfs-csi-driver:latest     # TODO: replace
+          image: ghcr.io/your-org/cnfs-csi-driver:latest
+          imagePullPolicy: IfNotPresent
           args:
-            - "--endpoint=unix:///csi/csi.sock"
-            - "--mode=node"
+            - "--endpoint=$(CSI_ENDPOINT)"
+            - "--nodeid=$(NODE_ID)"
+          env:
+            - name: CSI_ENDPOINT
+              value: unix:///csi/csi.sock
+            - name: NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
           securityContext:
             privileged: true
           volumeMounts:
@@ -30,7 +38,7 @@ spec:
               mountPath: /var/lib/kubelet/pods
               mountPropagation: Bidirectional
 
-        #Node driver registrar
+        # Node driver registrar
         - name: csi-node-driver-registrar
           image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
           args:
@@ -43,14 +51,19 @@ spec:
               mountPath: /registration
 
       volumes:
+        # Directory for the CSI socket
         - name: plugin-dir
           hostPath:
             path: /var/lib/kubelet/plugins/csi.cnfs.interposer.io
             type: DirectoryOrCreate
+
+        # REQUIRED — directory where registrar puts the registration socket
         - name: registration-dir
           hostPath:
             path: /var/lib/kubelet/plugins_registry
-            type: Directory
+            type: DirectoryOrCreate
+
+        # Required for Kata runtime / VM based mounts
         - name: pods-mount-dir
           hostPath:
             path: /var/lib/kubelet/pods

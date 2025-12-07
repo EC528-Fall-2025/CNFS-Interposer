@@ -17,10 +17,19 @@ spec:
       containers:
         #CSI controller plugin
         - name: cnfs-csi-controller
-          image: ghcr.io/your-org/cnfs-csi-driver:latest   # TODO: replace
+          image: ghcr.io/your-org/cnfs-csi-driver:latest
+          imagePullPolicy: IfNotPresent
           args:
-            - "--endpoint=unix:///csi/csi.sock"
-            - "--mode=controller"
+            - "--endpoint=$(CSI_ENDPOINT)"
+            - "--nodeid=$(NODE_ID)"
+          env:
+            - name: CSI_ENDPOINT
+              value: unix:///csi/csi.sock
+            - name: NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+
           volumeMounts:
             - name: socket-dir
               mountPath: /csi
