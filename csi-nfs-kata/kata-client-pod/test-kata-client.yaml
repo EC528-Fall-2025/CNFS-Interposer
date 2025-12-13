@@ -1,0 +1,21 @@
+# test-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kata-nfs-client
+spec:
+  runtimeClassName: kata-nfs
+  containers:
+  - name: kata-c
+    image: nfs-client:latest
+    imagePullPolicy: IfNotPresent
+    securityContext:
+      privileged: true
+    volumeMounts:
+      - name: virtiofs-socket
+        mountPath: /shared/virtiofs
+  volumes:
+  - name: virtiofs-socket
+    hostPath:
+      path: /run/kata-virtiofs/vol-123  # host path for virtiofs socket
+      type: DirectoryOrCreate

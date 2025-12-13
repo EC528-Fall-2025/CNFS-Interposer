@@ -4,7 +4,6 @@
 
 ## Mentor
 
-
 ## 0. Install Instructions
 Clone the repository:
 ```bash
@@ -43,6 +42,9 @@ mkdir /mnt/nfs
 mount -t nfs -o vers=4 <HOST_IP>:<HOST_DIR> /mnt/nfs
 ```
 Detailed instructions to setup NFS server and mount it inside a QEMU VM is provided in the `nfs-mount-to-guest-vm/README.md` file. 
+
+## NFS CSI Driver with Kata Install
+See csi-nfs-kata/README.md.
 
 ## 1. Vision and Goals Of The Project
 The vision of our project is to enable containerized environments, such as Kubernetes, to run kernel-dependent file system clients natively and securely, without requiring access to the host or dependence on the host kernel. By using virtual machines (Kata Containers) and standardized Kubernetes storage interfaces (CSI), the solution will allow file systems like NFS or CephFS to be mounted and consumed inside container workloads in a transparent, secure, and portable way. \
