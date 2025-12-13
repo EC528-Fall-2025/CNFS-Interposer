@@ -1,8 +1,8 @@
-# CSI Driver For NFS mount in Kata container (unfinished)
-This directory contains the source files that have to be changed and added in the NFS CSI driver repo so that the CSI driver mounts the NFS server in a Kata container instead of on the node.
+# CSI Driver For NFS using Kata containers (unfinished)
+This directory contains the source files that have to be changed in the NFS CSI driver repo so that the CSI driver mounts the NFS server in a Kata container instead of on the node. Start by cloning the [NFS CSI driver repo](https://github.com/kubernetes-csi/csi-driver-nfs).
 The export path out of the Kata container to the consuming pod is not yet implemented. 
-The mount in the kata container requires changes to the node service of the CSI driver which runs as a daemonset on every node in the cluster. 
-The node pod contains multiple containers which communicate with one another and the kubelet over Unix domain sockets. Kata containers cannot communicate over Unix domain sockets so running this pod with the kata-runtime so that the mount happens in a Kata container will cause the node-driver registrar sidecar to lose contact with the nfs plugin.
+The mount inside the kata container requires changes to the node service of the CSI driver which runs as a daemonset on every node in the cluster. 
+The node pod contains multiple containers which communicate with one another and the kubelet over Unix domain sockets. Kata containers cannot communicate over Unix domain sockets so running this pod with the kata-runtime will cause the node-driver registrar sidecar to lose contact with the nfs plugin.
 As long as a vm boundary is being crossed, this will remain an issue. So we keep the node deployment intact and instead modify the code that runs in the CSI driver to call the Kubernetes API to create a Kata pod on the node. The Kata pod has a runtime script that mounts the NFS server with the arguments passed from the CSI driver. 
 
 
@@ -12,7 +12,7 @@ func buildKataPodManifest()
 Creates the manifest for the kata worker pod with the nfs server source and target path info.
 
 In NodePublishVolume
-Commented out mount on host. Instead, create a kata container on this node
+Commented out mount on host. Instead, create a kata container on this node and pass along the mount info.
 
 pkg/nfs.go
 Instantiate the K8s client that can be used to create resources on the cluster.
@@ -42,7 +42,7 @@ minikube ssh "cat /opt/kata/share/kata-containers/config-6.12.47-173" > ~/config
 ### Kata container rebuild with NFS kernel modules
 Go to kata-containers/tools/packaging/kernel
 Install the dependencies mentioned in the README.md
-Edit a your config file from previous step by setting NFS_FS=y
+Edit your config file from previous step by setting NFS_FS=y
 Use the build-kernel.sh script in kata-containers-tools/packaging/kernel to build the kernel.
 ```
 ./build-kernel.sh -c ~/config-6.12.47-173 -v 6.12.47 setup
@@ -53,7 +53,7 @@ Use the build-kernel.sh script in kata-containers-tools/packaging/kernel to buil
 ### Custom Kata containers install
 This is by far the most brittle part of the setup.
 We have to add a new Kata runtime to the Kata containers installation in the K8s cluster to use our custom kernel.
-We have found that overwriting the existing kata-qemu runtime leads to Minikube crashes so it is better to create a new runtime, kata-nfs. There are four additions to make.
+We have found that overwriting the existing kata-qemu runtime is susceptible to Minikube crashes so it is better to create a new runtime, kata-nfs. There are four additions to make.
 
 ```
 # Copy the new kernel into Minikube
@@ -74,7 +74,7 @@ kernel = "/opt/kata/share/kata-containers/kata-nfs/vmlinux.container"
 ```
 cd  /etc/containerd/
 ```
-In config.toml, add a new runtime and handler
+In config.toml, add the following runtime and handler:
 
 [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.kata-nfs]
 runtime_type = "io.containerd.kata-qemu.v2"
@@ -131,6 +131,7 @@ kubectl get pods -n kube-system
 ```
 
 ### Test pod
+From the csi-nfs-driver-nfs root directory, do:
 ```
 kubectl apply -f deploy/example/pvc-nfs-csi-dynamic.yaml
 kubectl apply -f deploy/example/nginx-pod-nfs.yaml
