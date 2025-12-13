@@ -23,5 +23,5 @@ RUN chmod +x /mount-worker.sh
 
 # Set the entrypoint to a command that keeps the container running, 
 # typically /bin/bash for debugging or /bin/true for simple background tasks.
-ENTRYPOINT ["/bin/bash"]
-#ENTRYPOINT ["/mount-worker.sh"]
+#ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/mount-worker.sh"]

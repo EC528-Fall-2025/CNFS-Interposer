@@ -24,10 +24,10 @@ Use modified nfs plugin container
 
 ## Instructions
 ### Prerequisites
-Docker, go, a K8s cluster (We only tested with Minikube and some instructions are Minikube specific)   
+Docker, go, a K8s cluster (We only tested with Minikube)   
 
 ### Kata containers install on K8s cluster
-For Minikube, follow: https://github.com/kata-containers/kata-containers/blob/main/docs/install/minikube-installation-guide.md    
+For Minikube, follow: [kata minikube installation guide](https://github.com/kata-containers/kata-containers/blob/main/docs/install/minikube-installation-guide.md) 
 **Known issues with Kata and Minikube:**    
 Some of the deployment scripts do not exist in the latest version of the repo, so:     
 ```
@@ -137,7 +137,12 @@ From the csi-nfs-driver-nfs root directory, do:
 kubectl apply -f deploy/example/pvc-nfs-csi-dynamic.yaml
 kubectl apply -f deploy/example/nginx-pod-nfs.yaml
 ```
-This will call the NodePublishVolume method of the node service of the CSI driver which should create a Kata container and mount the NFS server in the Kata container. You should see a new "kata-worker" pod in the kube-system namespace.
+This will call the NodePublishVolume method of the node service of the CSI driver which should create a Kata container and mount the NFS server in the Kata container. You should see a new "kata-worker" pod in the kube-system namespace.  
+Navigate to /mnt/nfs to confirm the mount.
+```
+kubectl exec -it <kata-pod-name> -n kube-system -- bash
+cd /mnt/nfs
+```
 
 
 ## Not yet implemented
